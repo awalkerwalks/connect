@@ -513,6 +513,7 @@ const indices = {
   her: { light: 0, warm: 0, hot: 0, mix: 0 },
   him: { light: 0, warm: 0, hot: 0, mix: 0 },
 };
+const answered = { her: 0, him: 0 };
 
 const mixPools = {
   her: [],
@@ -629,10 +630,7 @@ function updateProgress() {
 }
 
 function updateBtnScore() {
-  const idx = getIdx();
-  const forfeits = currentPlayer === 'her' ? herforfeitCount : himforfeitCount;
-  const answered = Math.max(0, idx - forfeits);
-  document.getElementById('btnScore').textContent = answered + ' answered';
+  document.getElementById('btnScore').textContent = answered[currentPlayer] + ' answered';
 }
 
 const catNames = { light: '😂 Light', warm: '🕯️ Warm', hot: '🔥 Hot', mix: '🎲 Mix' };
@@ -709,6 +707,7 @@ function nextCard() {
       markSeen(currentPlayer, currentCat, idx);
     }
     buildMixPool(currentPlayer);
+    answered[currentPlayer]++;
   }
   setIdx(Math.min(idx + 1, pool.length));
   renderCard();
