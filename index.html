@@ -55,10 +55,12 @@ margin-bottom: 18px; font-size: 0.78rem; color: var(--muted); line-height: 1.7;
 flex: 1; padding: 12px; border-radius: 10px; border: 1.5px solid transparent;
 font-family: 'DM Sans', sans-serif; font-size: 0.86rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease;
 }
-.player-btn.her { background: rgba(232,69,96,0.08); border-color: rgba(232,69,96,0.3); color: var(--accent-her); }
-.player-btn.him { background: rgba(69,114,232,0.08); border-color: rgba(69,114,232,0.3); color: var(--accent-him); }
-.player-btn.active.her { background: var(--accent-her); color: white; border-color: var(--accent-her); }
-.player-btn.active.him { background: var(--accent-him); color: white; border-color: var(--accent-him); }
+player-btn.her { background: rgba(232,69,96,0.08); border-color: rgba(232,69,96,0.3); color: var(--accent-her); }
+player-btn.him { background: rgba(69,114,232,0.08); border-color: rgba(69,114,232,0.3); color: var(--accent-him); }
+ cycle-arrow { font-size: 1rem; opacity: 0.5; }
+player-btn:hover .cycle-arrow { opacity: 1; }
+player-btn.active.her { background: var(--accent-her); color: white; border-color: var(--accent-her); }
+player-btn.active.him { background: var(--accent-him); color: white; border-color: var(--accent-him); }
 
 /* CATEGORY */
 .cat-select { display: flex; gap: 8px; margin-bottom: 14px; width: 100%; max-width: 480px; }
@@ -583,8 +585,8 @@ const genderState  = { her: 0, him: 1 };
 function cycleGender(player) {
   genderState[player] = (genderState[player] + 1) % genderLabels.length;
   const label = genderLabels[genderState[player]];
-  document.querySelector(`.player-btn.${player}`).textContent = label + ' questions';
-  setPlayer(player);
+document.querySelector(`.player-btn.${player} .player-label`).textContent = label + ' questions';
+ setPlayer(player);
 }
  function setPlayer(p) {
   currentPlayer = p;
