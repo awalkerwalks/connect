@@ -587,6 +587,7 @@ function cycleGender(player, dir) {
   genderState[player] = (genderState[player] + dir + genderLabels.length) % genderLabels.length;
   const label = genderLabels[genderState[player]];
   document.querySelector(`.player-btn.${player} .player-label`).textContent = label + ' questions';
+  document.querySelector(`.score-pill.${player} .label`).textContent = label;
   setPlayer(player);
 }
  function setPlayer(p) {
