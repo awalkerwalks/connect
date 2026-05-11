@@ -209,8 +209,8 @@ font-family: 'DM Sans', sans-serif; font-size: 0.88rem; cursor: pointer; transit
 </div>
 
 <div class="player-select">
-<button class="player-btn her active" onclick="cycleGender('her')"><span class="cycle-arrow">&#8249;</span> <span class="player-label">Her questions</span> <span class="cycle-arrow">&#8250;</span></button>
-<button class="player-btn him" onclick="cycleGender('him')"><span class="cycle-arrow">&#8249;</span> <span class="player-label">His questions</span> <span class="cycle-arrow">&#8250;</span></button>
+<button class="player-btn her active"><span class="cycle-arrow" onclick="cycleGender('her', -1)">&#8249;</span> <span class="player-label">Her questions</span> <span class="cycle-arrow" onclick="cycleGender('her', 1)">&#8250;</span></button>
+<button class="player-btn him"><span class="cycle-arrow" onclick="cycleGender('him', -1)">&#8249;</span> <span class="player-label">His questions</span> <span class="cycle-arrow" onclick="cycleGender('him', 1)">&#8250;</span></button>
 </div>
 
 <div class="cat-select">
@@ -582,11 +582,11 @@ function updateTimerDisplay() {
 const genderLabels = ['Her', 'His', 'Their'];
 const genderState  = { her: 0, him: 1 };
 
-function cycleGender(player) {
-  genderState[player] = (genderState[player] + 1) % genderLabels.length;
+function cycleGender(player, dir) {
+  genderState[player] = (genderState[player] + dir + genderLabels.length) % genderLabels.length;
   const label = genderLabels[genderState[player]];
-document.querySelector(`.player-btn.${player} .player-label`).textContent = label + ' questions';
- setPlayer(player);
+  document.querySelector(`.player-btn.${player} .player-label`).textContent = label + ' questions';
+  setPlayer(player);
 }
  function setPlayer(p) {
   currentPlayer = p;
