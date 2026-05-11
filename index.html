@@ -207,8 +207,8 @@ font-family: 'DM Sans', sans-serif; font-size: 0.88rem; cursor: pointer; transit
 </div>
 
 <div class="player-select">
-  <button class="player-btn her active" onclick="setPlayer('her')">Her questions</button>
-  <button class="player-btn him" onclick="setPlayer('him')">His questions</button>
+<button class="player-btn her active" onclick="cycleGender('her')">Her questions</button>
+<button class="player-btn him" onclick="cycleGender('him')">His questions</button>
 </div>
 
 <div class="cat-select">
@@ -577,7 +577,16 @@ function updateTimerDisplay() {
 }
 
 // ── RENDER ────────────────────────────────────────────────────
-function setPlayer(p) {
+const genderLabels = ['Her', 'His', 'Their'];
+const genderState  = { her: 0, him: 1 };
+
+function cycleGender(player) {
+  genderState[player] = (genderState[player] + 1) % genderLabels.length;
+  const label = genderLabels[genderState[player]];
+  document.querySelector(`.player-btn.${player}`).textContent = label + ' questions';
+  setPlayer(player);
+}
+ function setPlayer(p) {
   currentPlayer = p;
   document.querySelectorAll('.player-btn').forEach(b => b.classList.remove('active'));
   document.querySelector(`.player-btn.${p}`).classList.add('active');
