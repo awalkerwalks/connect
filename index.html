@@ -57,7 +57,7 @@ font-family: 'DM Sans', sans-serif; font-size: 0.86rem; font-weight: 500; cursor
 }
 .player-btn.her { background: rgba(232,69,96,0.08); border-color: rgba(232,69,96,0.3); color: var(--accent-her); }
 .player-btn.him { background: rgba(69,114,232,0.08); border-color: rgba(69,114,232,0.3); color: var(--accent-him); }
-. cycle-arrow { font-size: 1rem; opacity: 0.5; }
+.cycle-arrow { font-size: 1rem; opacity: 0.5; }
 .player-btn:hover .cycle-arrow { opacity: 1; }
 .player-btn.active.her { background: var(--accent-her); color: white; border-color: var(--accent-her); }
 .player-btn.active.him { background: var(--accent-him); color: white; border-color: var(--accent-him); }
@@ -209,8 +209,8 @@ font-family: 'DM Sans', sans-serif; font-size: 0.88rem; cursor: pointer; transit
 </div>
 
 <div class="player-select">
-<button class="player-btn her active" onclick="cycleGender('her')">Her questions</button>
-<button class="player-btn him" onclick="cycleGender('him')">His questions</button>
+<button class="player-btn her active" onclick="cycleGender('her')"><span class="cycle-arrow">&#8249;</span> <span class="player-label">Her questions</span> <span class="cycle-arrow">&#8250;</span></button>
+<button class="player-btn him" onclick="cycleGender('him')"><span class="cycle-arrow">&#8249;</span> <span class="player-label">His questions</span> <span class="cycle-arrow">&#8250;</span></button>
 </div>
 
 <div class="cat-select">
