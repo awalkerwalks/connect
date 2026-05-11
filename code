@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hot Seat 🔥</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0d0b0b;
+    --accent-her: #e84560;
+    --accent-him: #4572e8;
+    --gold: #c9a84c;
+    --light-col: #5bbf7a;
+    --warm-col: #e8944a;
+    --hot-col: #e84560;
+    --text: #f0ece6;
+    --muted: #7a7068;
+  }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 16px 80px;
+    background-image:
+      radial-gradient(ellipse at 15% 10%, #2a0a1844 0%, transparent 55%),
+      radial-gradient(ellipse at 85% 90%, #0a1a2a44 0%, transparent 55%);
+  }
+  header { text-align: center; margin-bottom: 18px; }
+  header h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(2.4rem, 9vw, 3.6rem);
+    font-weight: 700; letter-spacing: -1px; line-height: 1;
+    background: linear-gradient(135deg, var(--accent-her) 0%, var(--gold) 50%, var(--accent-him) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  header p { font-size: 0.74rem; color: var(--muted); margin-top: 6px; letter-spacing: 0.8px; text-transform: uppercase; }
+
+.rules {
+background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07);
+border-radius: 12px; padding: 12px 16px; max-width: 480px; width: 100%;
+margin-bottom: 18px; font-size: 0.78rem; color: var(--muted); line-height: 1.7;
+}
+.rules strong { color: var(--gold); font-weight: 500; }
+
+/* PLAYER */
+.player-select { display: flex; gap: 10px; margin-bottom: 14px; width: 100%; max-width: 480px; }
+.player-btn {
+flex: 1; padding: 12px; border-radius: 10px; border: 1.5px solid transparent;
+font-family: 'DM Sans', sans-serif; font-size: 0.86rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease;
+}
+.player-btn.her { background: rgba(232,69,96,0.08); border-color: rgba(232,69,96,0.3); color: var(--accent-her); }
+.player-btn.him { background: rgba(69,114,232,0.08); border-color: rgba(69,114,232,0.3); color: var(--accent-him); }
+.player-btn.active.her { background: var(--accent-her); color: white; border-color: var(--accent-her); }
+.player-btn.active.him { background: var(--accent-him); color: white; border-color: var(--accent-him); }
+
+/* CATEGORY */
+.cat-select { display: flex; gap: 8px; margin-bottom: 14px; width: 100%; max-width: 480px; }
+.cat-btn {
+flex: 1; padding: 10px 4px; border-radius: 10px; border: 1.5px solid transparent;
+font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 500;
+cursor: pointer; transition: all 0.2s ease; text-align: center; line-height: 1.3;
+}
+.cat-btn .cat-emoji { display: block; font-size: 1.15rem; margin-bottom: 2px; }
+.cat-btn .cat-sub { display: block; font-size: 0.6rem; letter-spacing: 0.4px; opacity: 0.7; margin-top: 1px; }
+.cat-btn.light { background: rgba(91,191,122,0.08); border-color: rgba(91,191,122,0.3); color: var(--light-col); }
+.cat-btn.warm  { background: rgba(232,148,74,0.08);  border-color: rgba(232,148,74,0.3); color: var(--warm-col); }
+.cat-btn.hot   { background: rgba(232,69,96,0.08);   border-color: rgba(232,69,96,0.3);  color: var(--hot-col); }
+.cat-btn.mix   { background: rgba(201,168,76,0.08);  border-color: rgba(201,168,76,0.3); color: var(--gold); }
+.cat-btn.active.light { background: var(--light-col); color: #0d1a10; border-color: var(--light-col); }
+.cat-btn.active.warm  { background: var(--warm-col);  color: #1a0e04; border-color: var(--warm-col); }
+.cat-btn.active.hot   { background: var(--hot-col);   color: white;   border-color: var(--hot-col); }
+.cat-btn.active.mix   { background: var(--gold);      color: #1a1408; border-color: var(--gold); }
+.cat-btn.active .cat-sub { opacity: 0.6; }
+
+/* PROGRESS */
+.progress-row { display: flex; gap: 6px; width: 100%; max-width: 480px; margin-bottom: 14px; }
+.progress-pill {
+flex: 1; padding: 7px 4px; border-radius: 8px; font-size: 0.67rem;
+text-align: center; background: rgba(255,255,255,0.03);
+border: 1px solid rgba(255,255,255,0.06); color: var(--muted); cursor: pointer; transition: all 0.15s ease;
+}
+.progress-pill:hover { background: rgba(255,255,255,0.06); }
+.progress-pill .p-num { display: block; font-size: 0.85rem; font-weight: 500; margin-bottom: 1px; }
+.progress-pill.light .p-num { color: var(--light-col); }
+.progress-pill.warm  .p-num { color: var(--warm-col); }
+.progress-pill.hot   .p-num { color: var(--hot-col); }
+.progress-pill.mix   .p-num { color: var(--gold); }
+
+/* TIMER */
+.timer-wrap { width: 100%; max-width: 480px; margin-bottom: 14px; }
+.timer-display {
+display: flex; align-items: center; justify-content: space-between;
+background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07);
+border-radius: 12px; padding: 11px 14px; gap: 12px;
+}
+.timer-number {
+font-family: 'Fraunces', serif; font-size: 1.9rem; font-weight: 700;
+letter-spacing: -1px; min-width: 58px; color: var(--gold); transition: color 0.3s ease;
+}
+.timer-number.urgent { color: var(--hot-col); animation: pulse 0.6s ease infinite alternate; }
+@keyframes pulse { from { opacity: 1; } to { opacity: 0.4; } }
+.timer-bar-wrap { flex: 1; height: 4px; background: rgba(255,255,255,0.07); border-radius: 2px; overflow: hidden; }
+.timer-bar { height: 100%; border-radius: 2px; transition: width 1s linear, background 1s ease; background: var(--gold); width: 100%; }
+.timer-controls { display: flex; gap: 6px; }
+.timer-btn {
+padding: 7px 12px; border-radius: 7px; border: 1px solid rgba(255,255,255,0.1);
+background: rgba(255,255,255,0.04); color: var(--text);
+font-family: 'DM Sans', sans-serif; font-size: 0.75rem; cursor: pointer; transition: all 0.15s ease; white-space: nowrap;
+}
+.timer-btn:hover { background: rgba(255,255,255,0.09); }
+
+/* CARD */
+.card-area { width: 100%; max-width: 480px; margin-bottom: 10px; min-height: 200px; display: flex; flex-direction: column; }
+.card {
+width: 100%; border-radius: 18px; padding: 26px 22px; position: relative;
+overflow: hidden; cursor: pointer; min-height: 200px; display: flex;
+flex-direction: column; justify-content: space-between;
+transition: transform 0.15s ease; user-select: none;
+}
+.card:active { transform: scale(0.98); }
+.card::before {
+content: ''; position: absolute; inset: 0; opacity: 0.03;
+background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff'%3E%3Cpath d='M20 20.5V18H0v5h5v5H0v5h20v-2.5h20V20.5H20z'/%3E%3C/g%3E%3C/svg%3E");
+}
+.card.light-card { background: linear-gradient(135deg,#0d1f14,#091509); border: 1px solid rgba(91,191,122,0.25); box-shadow: 0 8px 40px rgba(91,191,122,0.1); }
+.card.warm-card  { background: linear-gradient(135deg,#1f1308,#150d05); border: 1px solid rgba(232,148,74,0.25); box-shadow: 0 8px 40px rgba(232,148,74,0.1); }
+.card.hot-card   { background: linear-gradient(135deg,#20080f,#150508); border: 1px solid rgba(232,69,96,0.25);  box-shadow: 0 8px 40px rgba(232,69,96,0.12); }
+.card.mix-card   { background: linear-gradient(135deg,#1a1408,#120f04); border: 1px solid rgba(201,168,76,0.25); box-shadow: 0 8px 40px rgba(201,168,76,0.1); }
+.card-top { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+.card-label { font-size: 0.66rem; text-transform: uppercase; letter-spacing: 2px; font-weight: 500; color: rgba(255,255,255,0.4); }
+.light-card .card-label { color: var(--light-col); }
+.warm-card  .card-label { color: var(--warm-col); }
+.hot-card   .card-label { color: var(--hot-col); }
+.mix-card   .card-label { color: var(--gold); }
+.cat-badge {
+font-size: 0.6rem; text-transform: uppercase; letter-spacing: 1.5px;
+padding: 3px 9px; border-radius: 20px; font-weight: 500; margin-left: auto;
+}
+.light-card .cat-badge { background: rgba(91,191,122,0.15); color: var(--light-col); }
+.warm-card  .cat-badge { background: rgba(232,148,74,0.15); color: var(--warm-col); }
+.hot-card   .cat-badge { background: rgba(232,69,96,0.15);  color: var(--hot-col); }
+.mix-card   .cat-badge { background: rgba(201,168,76,0.15); color: var(--gold); }
+.question-text {
+font-family: 'Fraunces', serif; font-size: clamp(1.08rem,3.8vw,1.3rem);
+line-height: 1.55; font-style: italic; flex: 1; display: flex; align-items: center;
+color: var(--text);
+}
+.card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 18px; }
+.card-counter { font-size: 0.7rem; color: var(--muted); }
+.card-hint { font-size: 0.68rem; color: var(--muted); font-style: italic; }
+
+/* ACTIONS */
+.action-row { display: flex; gap: 8px; width: 100%; max-width: 480px; margin-bottom: 8px; }
+.next-btn {
+flex: 2; padding: 10px 15px; border-radius: 10px; border: none;
+font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 500; cursor: pointer; transition: all 0.18s ease;
+display: flex; flex-direction: column; align-items: center; gap: 2px;
+}
+.next-btn.light { background: var(--light-col); color: #0d1a10; }
+.next-btn.warm  { background: var(--warm-col);  color: #1a0e04; }
+.next-btn.hot   { background: var(--hot-col);   color: white; }
+.next-btn.mix   { background: var(--gold);      color: #1a1408; }
+.next-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+.next-btn .btn-label { font-size: 0.88rem; font-weight: 500; }
+.next-btn .btn-score { font-size: 0.68rem; opacity: 0.75; letter-spacing: 0.4px; }
+.drink-btn {
+flex: 1; padding: 15px; border-radius: 10px; border: 1px solid rgba(201,168,76,0.35);
+background: rgba(201,168,76,0.06); color: var(--gold);
+font-family: 'DM Sans', sans-serif; font-size: 0.88rem; cursor: pointer; transition: all 0.18s ease; white-space: nowrap;
+}
+.drink-btn:hover { background: rgba(201,168,76,0.12); }
+
+/* SCORE */
+.score-bar { display: flex; gap: 8px; width: 100%; max-width: 480px; margin-top: 6px; }
+.score-pill { flex: 1; padding: 10px; border-radius: 8px; text-align: center; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); }
+.score-pill span { display: block; font-size: 1.3rem; font-weight: 700; margin-bottom: 1px; }
+.score-pill.her span { color: var(--accent-her); }
+.score-pill.him span { color: var(--accent-him); }
+.score-pill .label { font-size: 0.7rem; color: var(--muted); }
+
+.drink-flash { position: fixed; inset: 0; pointer-events: none; opacity: 0; transition: opacity 0.3s ease; z-index: 100; }
+.drink-flash.show { opacity: 1; }
+
+.empty-state { text-align: center; padding: 36px 20px; color: var(--muted); width: 100%; }
+.empty-state .emoji { font-size: 2.6rem; display: block; margin-bottom: 10px; }
+.reset-btn { margin-top: 12px; padding: 10px 20px; border-radius: 8px; border: 1px solid var(--gold); background: transparent; color: var(--gold); font-family: 'DM Sans', sans-serif; cursor: pointer; font-size: 0.82rem; }
+</style>
+
+</head>
+<body>
+<div class="drink-flash" id="drinkFlash"></div>
+
+<header>
+  <h1>Hot Seat 🔥</h1>
+  <p>Laugh = drink · Refuse = drink · 5 mins per round</p>
+</header>
+
+<div class="rules">
+  <strong>How to play:</strong> Pick a player and a category (or Mix for surprise). They answer honestly — <strong>laugh instead of answering</strong> or <strong>refuse</strong>, they drink. Hit 🥂 to track it. Start <strong>Light</strong>, build to <strong>Hot</strong>.
+</div>
+
+<div class="player-select">
+  <button class="player-btn her active" onclick="setPlayer('her')">Her questions</button>
+  <button class="player-btn him" onclick="setPlayer('him')">His questions</button>
+</div>
+
+<div class="cat-select">
+  <button class="cat-btn light active" onclick="setCat('light')">
+    <span class="cat-emoji">😂</span>Light<span class="cat-sub">Funny & silly</span>
+  </button>
+  <button class="cat-btn warm" onclick="setCat('warm')">
+    <span class="cat-emoji">🕯️</span>Warm<span class="cat-sub">Nostalgic</span>
+  </button>
+  <button class="cat-btn hot" onclick="setCat('hot')">
+    <span class="cat-emoji">🔥</span>Hot<span class="cat-sub">Deep & spicy</span>
+  </button>
+  <button class="cat-btn mix" onclick="setCat('mix')">
+    <span class="cat-emoji">🎲</span>Mix<span class="cat-sub">Surprise me</span>
+  </button>
+</div>
+
+<div class="progress-row">
+  <div class="progress-pill light" onclick="setCat('light')"><span class="p-num" id="lightLeft">—</span>left</div>
+  <div class="progress-pill warm"  onclick="setCat('warm')"><span class="p-num" id="warmLeft">—</span>left</div>
+  <div class="progress-pill hot"   onclick="setCat('hot')"><span class="p-num" id="hotLeft">—</span>left</div>
+  <div class="progress-pill mix"   onclick="setCat('mix')"><span class="p-num" id="mixLeft">—</span>left</div>
+</div>
+
+<div class="timer-wrap">
+  <div class="timer-display">
+    <div class="timer-number" id="timerDisplay">5:00</div>
+    <div class="timer-bar-wrap"><div class="timer-bar" id="timerBar"></div></div>
+    <div class="timer-controls">
+      <button class="timer-btn" id="timerStartBtn" onclick="toggleTimer()">Start</button>
+      <button class="timer-btn" onclick="resetTimer()">Reset</button>
+    </div>
+  </div>
+</div>
+
+<div class="card-area" id="cardArea"></div>
+
+<div class="action-row">
+<button class="next-btn light" id="nextBtn" onclick="nextCard()">
+  <span class="btn-label">Next Question →</span>
+  <span class="btn-score" id="btnScore">0 answered</span>
+</button>  <button class="drink-btn" onclick="logDrink()">🥂 Drink</button>
+</div>
+
+<div class="score-bar">
+  <div class="score-pill her"><span id="herDrinks">0</span><div class="label">Her drinks</div></div>
+  <div class="score-pill him"><span id="himDrinks">0</span><div class="label">His drinks</div></div>
+</div>
+
+<script>
+// ── QUESTIONS ─────────────────────────────────────────────────
+
+const Q = {
+  light: [
+    "What's the most embarrassing thing you've done to get someone's attention?",
+    "What's the dumbest thing you've cried about in the last year?",
+    "What physical thing do you do in private that you'd die if he saw?",
+    "What do you do the second he leaves the house?",
+    "What's your most embarrassing playlist you listen to alone?",
+    "What's the most childish thing you still do and enjoy?",
+    "What's a completely irrational fear you have?",
+    "What's the most dramatic thing you've done after a row?",
+    "What film or show have you rewatched an embarrassing number of times?",
+    "What's the most ridiculous reason you've been in a bad mood?",
+    "What's the worst lie you've told to get out of plans?",
+    "What's the most unhinged thought you've had this week?",
+    "What's the pettiest argument you've ever started?",
+    "What's the most embarrassing thing you've Googled recently?",
+    "What's the worst thing you've eaten standing over the sink?",
+    "What's a completely wrong thing you believed for an embarrassing amount of time?",
+    "What's your go-to face when no one's watching?",
+    "What's the most embarrassing drunk moment you can remember?",
+    "What noise do you make when you think no one can hear you?",
+    "What's the most ridiculous hill you've died on in an argument?",
+    "What's a food combination you eat that would horrify people?",
+    "What's the most cringe thing you've said in an argument you wish you could take back?",
+    "What's the most you've ever spent on something completely unnecessary?",
+    "What was the last thing that made you properly snort-laugh?",
+    "What's something you've convinced yourself counts as exercise?",
+    "What's something you've done and immediately thought 'I'm telling no one'?",
+    "What's the most embarrassing thing you've tripped over or walked into?",
+    "What's a smell you secretly love that no normal person would admit to?",
+    "What's the most dramatic overreaction you've had to something minor?",
+    "What's a petty thing you've done that you felt fully justified about?",
+    "What habit do you have that you'd deny to literally anyone?",
+    "What's something you thought was normal until someone told you it wasn't?",
+    "What's your most embarrassing autocorrect moment?",
+    "What's the longest you've worn the same thing without washing it?",
+    "What's an embarrassing celebrity or fictional crush you've never admitted?",
+    "What's the most embarrassing voicemail you've ever left someone?",
+    "What game or app do you play more than you'd ever admit?",
+    "What's the most pathetic meal you've made and called it dinner?",
+    "What's the most dramatic thing you've done to avoid a difficult conversation?",
+    "What's the worst advice you've given with complete confidence?",
+    "What's the weirdest thing you've talked to yourself about out loud?",
+    "What's the most embarrassing reason you've cancelled plans?",
+    "What's the most dramatic internal monologue you've had about something tiny?",
+    "What's an item of clothing you own that the other person hates and you refuse to give up?",
+    "What TV character do you think you're most like vs who you actually are?",
+    "What's the dumbest risk you've ever taken?",
+    "What's something you've convinced yourself the other person hasn't noticed?",
+    "What sound does the other person make that you find inexplicably annoying?",
+    "What's a habit of yours that you know winds the other person up but you keep doing anyway?",
+    "What's something you've bought and immediately hidden?",
+    "What's a completely irrational thing you genuinely believe brings you bad luck?",
+    "What's the most embarrassing thing you did as a teenager that still makes you cringe?",
+    "What's the pettiest reason you've ever been genuinely annoyed at someone?",
+    "What's the most questionable decision you've made in the name of saving time?",
+    "What's something you're weirdly competitive about that no one would expect?",
+    "What's a personality trait you pretend to have that you actually don't?",
+    "What's something you do that you'd be mortified if anyone filmed?",
+    "What's the most dramatic you've ever been over something completely trivial?",
+    "What's a rule you have that sounds completely unreasonable out loud?",
+    "What's the most embarrassing thing you've done when you thought no one was watching?",
+    "What's the worst thing you've ever said to get out of doing something you didn't want to do?",
+    "What's something you pretend to enjoy that you actually find deeply boring?",
+    "What's a lie you've told so many times you almost believe it yourself?",
+    "What's the most embarrassing thing you own that you can't bring yourself to throw away?"
+  ],
+  warm: [
+    "What's the first memory you have of fancying someone?",
+    "What's a compliment someone gave you years ago that you still think about?",
+    "What memory of the two of you makes you laugh without fail?",
+    "What's something from your childhood home you miss?",
+    "What's a smell that takes you somewhere instantly?",
+    "When did you last properly fancy the other person and what set it off?",
+    "What's a small thing they do that makes you feel looked after?",
+    "What song takes you back to being a teenager?",
+    "What's something your mum or dad said to you that stuck with you?",
+    "What was your favourite place as a kid?",
+    "What's something you used to be really into that you've completely abandoned?",
+    "What's the happiest you've felt in the last year and why?",
+    "What's something about them you noticed before you ever fancied them?",
+    "What's your earliest happy memory?",
+    "What's a film that made you feel something unexpected?",
+    "What's a moment in your life that felt like a turning point?",
+    "What's something you're quietly proud of?",
+    "What childhood dream do you still think about sometimes?",
+    "What's a moment with them you didn't realise would matter as much as it did?",
+    "What's something a friend did for you that you'll never forget?",
+    "What's a place you'd love to go back to?",
+    "What's a version of yourself from a few years ago you're proud of?",
+    "What's the most at home you've ever felt somewhere?",
+    "What's a meal that means something to you?",
+    "What made you first feel comfortable around them?",
+    "What's something they said early on that you still remember?",
+    "What's something you love doing together that has nothing to do with going out?",
+    "What's a quality in them you admire that you've never directly told them?",
+    "What's the best piece of advice you were ever given?",
+    "What's something you used to worry about that doesn't bother you anymore?",
+    "What's a moment you felt genuinely proud of yourself?",
+    "What's something about your relationship that you value most?",
+    "What's a small moment between you that nobody else would understand?",
+    "What's a version of a normal day that would make you genuinely happy?",
+    "What's one thing about them that surprised you and still does?",
+    "What's something you're grateful for that you don't say enough?",
+    "What's a season or time of year that holds a lot for you?",
+    "What's the nicest thing a stranger has ever done for you?",
+    "What's a piece of music that genuinely moves you?",
+    "What's something about your future together you're quietly excited about?",
+    "What's a moment from your relationship that you'd want to relive?",
+    "What quality do you have now that your younger self would be surprised by?",
+    "What's something you've learned from them without them realising?",
+    "What's a small thing they do that you'd miss if they stopped?",
+    "What's a conversation you've had that you still think about?",
+    "What's something you're looking forward to that you haven't told them yet?",
+    "What's the kindest thing someone has ever said to you?",
+    "What's a tradition or habit the two of you have that you love?",
+    "What's something about them that made you think this could be something real?",
+    "What's a place that means something to you both?",
+    "What's something that used to feel scary that now just feels like home?",
+    "What's something you've never said out loud but feel grateful for every day?",
+    "What's a version of the future you used to imagine that looks different now — in a good way?",
+    "What's something they do without thinking that makes you feel loved?",
+    "What's a moment you realised they were different from anyone else?",
+    "What's a part of your story together that you'd want written down somewhere?",
+    "What's something small they did early on that made you think — yeah, this one's different?",
+    "What's a quality you hope you've inherited or absorbed from someone you love?",
+    "What's the last thing that made you think: I'm really lucky?",
+    "What's something you want them to know but find hard to say?",
+    "What does home feel like to you — and when did it start feeling that way?",
+    "What's a moment from the past year that you want to hold onto?",
+    "What's a dream you've never told anyone about?"
+  ],
+  hot: [
+    "What's a lie you've told them that they still believe?",
+    "What have you said about them to your friends that you wouldn't say to their face?",
+    "What's something you've never told them you find attractive about them?",
+    "What's a dealbreaker you've pretended not to have?",
+    "What's something you've done that you'd hate if they did to you?",
+    "What's the most unfair fight you've picked and known it at the time?",
+    "What's something you've lied about to seem more impressive?",
+    "What's a version of yourself you're ashamed of that they've never seen?",
+    "What's a thought you have about them that you'd never say out loud?",
+    "What's the most hurtful thing you could say to them that you'd never actually say?",
+    "What's something you've judged them for but never admitted?",
+    "What's a habit of theirs you pretend not to mind but actually do?",
+    "What's something you've said was fine when it absolutely wasn't?",
+    "What's a sacrifice you've made that you resent even a little?",
+    "What's something you've hidden because you knew they'd have a strong opinion?",
+    "What's the closest you've come to ending things and what stopped you?",
+    "What's a boundary you have that they don't know about?",
+    "What's something you want from them that you've never directly asked for?",
+    "What's a moment you chose yourself over them and don't regret it?",
+    "What's something you've stayed quiet about to keep the peace?",
+    "What's something you know about yourself that you're afraid they'll find out?",
+    "What's a part of your past you've glossed over with them?",
+    "What's something you've let them believe that isn't entirely true?",
+    "What's a feeling you've had about someone else that you've never mentioned?",
+    "What's the most selfish thing you've done in this relationship?",
+    "What's something you've forgiven them for that still sits with you?",
+    "What's a version of your life you imagined that looks different from this one?",
+    "What's something you want to change about how you two work that you haven't brought up?",
+    "What's a fear you have about the relationship that you've never said out loud?",
+    "What's something they do that makes you feel unseen — that you've never told them?",
+    "What's a moment you acted confident when you were actually terrified?",
+    "What's a conversation you've been avoiding and why?",
+    "What's something about yourself you're still figuring out that affects them?",
+    "What's a need you have that you've never clearly communicated?",
+    "What's something you've let slide that you wish you'd said something about?",
+    "What's the most vulnerable you've ever felt around them?",
+    "What's something you wish they understood about you without having to explain it?",
+    "What's a moment where you felt the furthest apart — and what did you do with it?",
+    "What's something you're proud of in yourself that you haven't let them see fully?",
+    "What's a part of you that existed before them that you sometimes miss?",
+    "What's the most honest thing you could say about what you need right now?",
+    "What's something you've never forgiven yourself for in this relationship?",
+    "What's a version of intimacy you crave that you haven't asked for?",
+    "What's something that scares you about how much you love them?",
+    "What's a moment you felt truly known by them — and did it scare you?",
+    "What's something you've never fully let them in on?",
+    "What's a feeling you carry that they don't know about?",
+    "What's something you've been pretending is fine that isn't?",
+    "What's something you've wanted to ask them but haven't found the courage to?",
+    "What's a truth about yourself you've been protecting them from?",
+    "What's a moment you chose comfort over honesty — and do you regret it?",
+    "What's something about the way you love that you think is hard to receive?",
+    "What's a part of yourself you're still becoming that they haven't fully met yet?",
+    "What's something you've realised about yourself only because of them?",
+    "What's a question you wish they'd ask you?",
+    "What's the thing you find hardest to say when you most need to say it?",
+    "What's a fear you have about who you're becoming?",
+    "What do you want more of — that you haven't asked for because you're not sure you deserve it?",
+    "What's a moment you felt misunderstood by them and said nothing?",
+    "What's something you've never quite forgiven, even though you said you did?",
+    "What's the most honest thing you could say about where you are right now?",
+    "What's something about them that changed you — that you've never told them?",
+    "What's a part of your relationship you're grieving quietly?",
+    "What's something you're afraid to want because you don't know if they want it too?",
+    "What's the most real version of yourself they haven't fully seen?",
+    "What's something you need to say — that you've been waiting for the right moment for?",
+    "What's a truth about the two of you that you both know but haven't said out loud?",
+    "What's something you love about them that also frightens you a little?",
+    "What's the bravest thing you could say right now?",
+    "What's one thing you'd want them to know if you only had one more conversation?",
+    "What's something you've been carrying alone that you're ready to share?",
+    "What would you say if you knew there were no consequences?",
+    "What's the most important thing you haven't said yet?",
+    "What's something you're afraid to admit you want from this relationship?",
+    "What's the truest thing you know about yourself right now?"
+  ]
+};
+
+// ── STATE ─────────────────────────────────────────────────────
+let currentPlayer = 'her';
+let currentCat = 'light';
+let herDrinkCount = 0;
+let himDrinkCount = 0;
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// Pools (shuffled) and indices per player/cat + mix
+const pools = {
+  her: {
+    light: shuffle([...Q.light]),
+    warm:  shuffle([...Q.warm]),
+    hot:   shuffle([...Q.hot]),
+  },
+  him: {
+    light: shuffle([...Q.light]),
+    warm:  shuffle([...Q.warm]),
+    hot:   shuffle([...Q.hot]),
+  },
+};
+
+const seen = {
+  her: { light: new Set(), warm: new Set(), hot: new Set() },
+  him: { light: new Set(), warm: new Set(), hot: new Set() },
+};
+
+const indices = {
+  her: { light: 0, warm: 0, hot: 0, mix: 0 },
+  him: { light: 0, warm: 0, hot: 0, mix: 0 },
+};
+
+const mixPools = {
+  her: [],
+  him: [],
+};
+
+function buildMixPool(player) {
+  let out = [];
+  ['light', 'warm', 'hot'].forEach(cat => {
+    pools[player][cat].forEach((q, i) => {
+      if (!seen[player][cat].has(i)) out.push({ q, cat, idx: i });
+    });
+  });
+  mixPools[player] = shuffle(out);
+}
+
+buildMixPool('her');
+buildMixPool('him');
+
+// ── TIMER ─────────────────────────────────────────────────────
+const TIMER_TOTAL = 300;
+let timerRemaining = TIMER_TOTAL;
+let timerRunning = false;
+let timerInterval = null;
+
+function toggleTimer() {
+  if (timerRunning) {
+    clearInterval(timerInterval);
+    timerRunning = false;
+    document.getElementById('timerStartBtn').textContent = 'Start';
+  } else {
+    if (timerRemaining <= 0) timerRemaining = TIMER_TOTAL;
+    timerRunning = true;
+    document.getElementById('timerStartBtn').textContent = 'Pause';
+    timerInterval = setInterval(() => {
+      timerRemaining--;
+      updateTimerDisplay();
+      if (timerRemaining <= 0) {
+        clearInterval(timerInterval);
+        timerRunning = false;
+        document.getElementById('timerStartBtn').textContent = 'Done!';
+      }
+    }, 1000);
+  }
+}
+
+function resetTimer() {
+  clearInterval(timerInterval);
+  timerRunning = false;
+  timerRemaining = TIMER_TOTAL;
+  document.getElementById('timerStartBtn').textContent = 'Start';
+  updateTimerDisplay();
+}
+
+function updateTimerDisplay() {
+  const m = Math.floor(timerRemaining / 60);
+  const s = timerRemaining % 60;
+  const el = document.getElementById('timerDisplay');
+  el.textContent = `${m}:${String(s).padStart(2,'0')}`;
+  el.className = 'timer-number' + (timerRemaining <= 30 && timerRemaining > 0 ? ' urgent' : '');
+  const pct = (timerRemaining / TIMER_TOTAL) * 100;
+  const bar = document.getElementById('timerBar');
+  bar.style.width = pct + '%';
+  bar.style.background = pct > 50 ? 'var(--gold)' : pct > 20 ? 'var(--warm-col)' : 'var(--hot-col)';
+}
+
+// ── RENDER ────────────────────────────────────────────────────
+function setPlayer(p) {
+  currentPlayer = p;
+  document.querySelectorAll('.player-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.player-btn.${p}`).classList.add('active');
+  renderCard();
+  updateProgress();
+  updateBtnScore();
+}
+
+function setCat(c) {
+  currentCat = c;
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.cat-btn.${c}`).classList.add('active');
+  const btn = document.getElementById('nextBtn');
+  btn.className = `next-btn ${c}`;
+  renderCard();
+}
+
+function getCardPool() {
+  if (currentCat === 'mix') return mixPools[currentPlayer];
+  return pools[currentPlayer][currentCat];
+}
+
+function getIdx() { return indices[currentPlayer][currentCat]; }
+function setIdx(v) { indices[currentPlayer][currentCat] = v; }
+
+function markSeen(player, cat, poolIdx) {
+  seen[player][cat].add(poolIdx);
+}
+
+function updateProgress() {
+  ['light','warm','hot'].forEach(cat => {
+    const left = Math.max(0, pools[currentPlayer][cat].length - indices[currentPlayer][cat]);
+    document.getElementById(cat + 'Left').textContent = left;
+  });
+  document.getElementById('mixLeft').textContent = mixPools[currentPlayer].length - getIdx() < 0 ? 0 : mixPools[currentPlayer].length;
+  updateBtnScore();
+}
+
+function updateBtnScore() {
+  const idx = getIdx();
+  const drinks = currentPlayer === 'her' ? herDrinkCount : himDrinkCount;
+  const answered = Math.max(0, idx - drinks);
+  document.getElementById('btnScore').textContent = answered + ' answered';
+}
+
+const catNames = { light: '😂 Light', warm: '🕯️ Warm', hot: '🔥 Hot', mix: '🎲 Mix' };
+
+function renderCard() {
+  const area = document.getElementById('cardArea');
+  const pool = getCardPool();
+  const idx  = getIdx();
+  const playerLabel = currentPlayer === 'her' ? '♀ Her turn' : '♂ His turn';
+
+  if (idx >= pool.length) {
+    area.innerHTML = `<div class="empty-state">
+      <span class="emoji">✨</span>
+      <p style="color:var(--muted);font-size:0.88rem">All ${catNames[currentCat]} questions done!<br>Try another category.</p>
+      <button class="reset-btn" onclick="resetCat()">Reshuffle this category</button>
+    </div>`;
+    return;
+  }
+
+  let q, displayCat;
+  if (currentCat === 'mix') {
+    q = pool[idx].q;
+    displayCat = catNames[pool[idx].cat];
+  } else {
+    q = pool[idx];
+    displayCat = catNames[currentCat];
+  }
+
+  const cardClass = currentCat === 'mix'
+    ? (pool[idx].cat + '-card')
+    : (currentCat + '-card');
+
+  area.innerHTML = `
+    <div class="card ${cardClass}" onclick="nextCard()">
+      <div>
+        <div class="card-top">
+          <div class="card-label">${playerLabel}</div>
+          <span class="cat-badge">${displayCat}</span>
+        </div>
+        <div class="question-text">${q}</div>
+      </div>
+      <div class="card-footer">
+        <span class="card-counter">${idx + 1} / ${pool.length}</span>
+        <span class="card-hint">tap card or button →</span>
+      </div>
+    </div>`;
+}
+
+function nextCard() {
+  const pool = getCardPool();
+  const idx  = getIdx();
+  if (idx < pool.length) {
+    if (currentCat === 'mix') {
+      const item = pool[idx];
+      markSeen(currentPlayer, item.cat, item.idx);
+    } else {
+      markSeen(currentPlayer, currentCat, idx);
+    }
+    buildMixPool(currentPlayer);
+  }
+  setIdx(Math.min(idx + 1, pool.length));
+  renderCard();
+  updateProgress();
+}
+
+function resetCat() {
+  if (currentCat === 'mix') {
+    ['light','warm','hot'].forEach(cat => seen[currentPlayer][cat].clear());
+    ['light','warm','hot'].forEach(cat => indices[currentPlayer][cat] = 0);
+    pools[currentPlayer].light = shuffle([...Q.light]);
+    pools[currentPlayer].warm  = shuffle([...Q.warm]);
+    pools[currentPlayer].hot   = shuffle([...Q.hot]);
+    buildMixPool(currentPlayer);
+    indices[currentPlayer] = { light: 0, warm: 0, hot: 0 };
+  } else {
+    seen[currentPlayer][currentCat] = new Set();
+    pools[currentPlayer][currentCat] = shuffle([...Q[currentCat]]);
+    indices[currentPlayer][currentCat] = 0;
+    buildMixPool(currentPlayer);
+  }
+  renderCard();
+  updateProgress();
+}
+
+function logDrink() {
+  const flash = document.getElementById('drinkFlash');
+  if (currentPlayer === 'her') {
+    herDrinkCount++;
+    document.getElementById('herDrinks').textContent = herDrinkCount;
+    flash.style.background = 'rgba(232,69,96,0.18)';
+  } else {
+    himDrinkCount++;
+    document.getElementById('himDrinks').textContent = himDrinkCount;
+    flash.style.background = 'rgba(69,114,232,0.18)';
+  }
+  flash.classList.add('show');
+  setTimeout(() => flash.classList.remove('show'), 350);
+}
+
+// INIT
+updateTimerDisplay();
+renderCard();
+updateProgress();
+</script>
+
+</body>
+</html>
