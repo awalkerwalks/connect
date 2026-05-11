@@ -173,12 +173,12 @@ display: flex; flex-direction: column; align-items: center; gap: 2px;
 .next-btn:hover { opacity: 0.88; transform: translateY(-1px); }
 .next-btn .btn-label { font-size: 0.88rem; font-weight: 500; }
 .next-btn .btn-score { font-size: 0.68rem; opacity: 0.75; letter-spacing: 0.4px; }
-.drink-btn {
+.forfeit-btn {
 flex: 1; padding: 15px; border-radius: 10px; border: 1px solid rgba(201,168,76,0.35);
 background: rgba(201,168,76,0.06); color: var(--gold);
 font-family: 'DM Sans', sans-serif; font-size: 0.88rem; cursor: pointer; transition: all 0.18s ease; white-space: nowrap;
 }
-.drink-btn:hover { background: rgba(201,168,76,0.12); }
+.forfeit-btn:hover { background: rgba(201,168,76,0.12); }
 
 /* SCORE */
 .score-bar { display: flex; gap: 8px; width: 100%; max-width: 480px; margin-top: 6px; }
@@ -188,8 +188,8 @@ font-family: 'DM Sans', sans-serif; font-size: 0.88rem; cursor: pointer; transit
 .score-pill.him span { color: var(--accent-him); }
 .score-pill .label { font-size: 0.7rem; color: var(--muted); }
 
-.drink-flash { position: fixed; inset: 0; pointer-events: none; opacity: 0; transition: opacity 0.3s ease; z-index: 100; }
-.drink-flash.show { opacity: 1; }
+.forfeit-flash { position: fixed; inset: 0; pointer-events: none; opacity: 0; transition: opacity 0.3s ease; z-index: 100; }
+.forfeit-flash.show { opacity: 1; }
 
 .empty-state { text-align: center; padding: 36px 20px; color: var(--muted); width: 100%; }
 .empty-state .emoji { font-size: 2.6rem; display: block; margin-bottom: 10px; }
@@ -198,7 +198,7 @@ font-family: 'DM Sans', sans-serif; font-size: 0.88rem; cursor: pointer; transit
 
 </head>
 <body>
-<div class="drink-flash" id="drinkFlash"></div>
+<div class="forfeit-flash" id="forfeitFlash"></div>
 
 <header>
   <h1>Connect 🔥</h1>
@@ -206,7 +206,7 @@ font-family: 'DM Sans', sans-serif; font-size: 0.88rem; cursor: pointer; transit
 </header>
 
 <div class="rules">
-  <strong>How to play:</strong> Pick a player and a category (or Mix for surprise). They answer honestly — <strong>refuse</strong>, they drink. Hit 🥂 to track it. Start <strong>Light</strong>, build to <strong>Hot</strong>.
+  <strong>How to play:</strong> Pick a player and a category (or Mix for surprise). They answer honestly — <strong>refuse</strong>, they forfeit. Hit 🚨 to track it. Start <strong>Light</strong>, build to <strong>Hot</strong>.
 </div>
 
 <div class="player-select">
@@ -253,12 +253,12 @@ font-family: 'DM Sans', sans-serif; font-size: 0.88rem; cursor: pointer; transit
 <button class="next-btn light" id="nextBtn" onclick="nextCard()">
   <span class="btn-label">Next Question →</span>
   <span class="btn-score" id="btnScore">0 answered</span>
-<button class="drink-btn" onclick="logDrink(); nextCard();">🥂 Drink & Next</button>
+<button class="forfeit-btn" onclick="logforfeit(); nextCard();">🚨 Forfeit & Next</button>
 </div>
 
 <div class="score-bar">
-  <div class="score-pill her"><span id="herDrinks">0</span><div class="label">Her drinks</div></div>
-  <div class="score-pill him"><span id="himDrinks">0</span><div class="label">His drinks</div></div>
+  <div class="score-pill her"><span id="herforfeits">0</span><div class="label">Her forfeits</div></div>
+  <div class="score-pill him"><span id="himforfeits">0</span><div class="label">His forfeits</div></div>
 </div>
 
 <script>
@@ -478,8 +478,8 @@ const Q = {
 // ── STATE ─────────────────────────────────────────────────────
 let currentPlayer = 'her';
 let currentCat = 'light';
-let herDrinkCount = 0;
-let himDrinkCount = 0;
+let herforfeitCount = 0;
+let himforfeitCount = 0;
 
 function shuffle(arr) {
   const a = [...arr];
@@ -630,8 +630,8 @@ function updateProgress() {
 
 function updateBtnScore() {
   const idx = getIdx();
-  const drinks = currentPlayer === 'her' ? herDrinkCount : himDrinkCount;
-  const answered = Math.max(0, idx - drinks);
+  const forfeits = currentPlayer === 'her' ? herforfeitCount : himforfeitCount;
+  const answered = Math.max(0, idx - forfeits);
   document.getElementById('btnScore').textContent = answered + ' answered';
 }
 
@@ -717,15 +717,15 @@ function resetCat() {
   updateProgress();
 }
 
-function logDrink() {
-  const flash = document.getElementById('drinkFlash');
+function logforfeit() {
+  const flash = document.getElementById('forfeitFlash');
   if (currentPlayer === 'her') {
-    herDrinkCount++;
-    document.getElementById('herDrinks').textContent = herDrinkCount;
+    herforfeitCount++;
+    document.getElementById('herforfeits').textContent = herforfeitCount;
     flash.style.background = 'rgba(232,69,96,0.18)';
   } else {
-    himDrinkCount++;
-    document.getElementById('himDrinks').textContent = himDrinkCount;
+    himforfeitCount++;
+    document.getElementById('himforfeits').textContent = himforfeitCount;
     flash.style.background = 'rgba(69,114,232,0.18)';
   }
   flash.classList.add('show');
