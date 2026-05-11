@@ -667,8 +667,8 @@ function renderCard() {
     : (currentCat + '-card');
 
   area.innerHTML = `
-    <div class="card ${cardClass}" onclick="nextCard()">
-      <div>
+<div class="card ${cardClass}" onclick="skipCard()">
+<div>
         <div class="card-top">
           <div class="card-label">${playerLabel}</div>
           <span class="cat-badge">${displayCat}</span>
@@ -677,9 +677,26 @@ function renderCard() {
       </div>
       <div class="card-footer">
         <span class="card-counter">${idx + 1} / ${pool.length}</span>
-        <span class="card-hint">tap card or button →</span>
+        <span class="card-hint">tap card to skip question →</span>
       </div>
     </div>`;
+}
+
+function skipCard() {
+  const pool = getCardPool();
+  const idx  = getIdx();
+  if (idx < pool.length) {
+    if (currentCat === 'mix') {
+      const item = pool[idx];
+      markSeen(currentPlayer, item.cat, item.idx);
+    } else {
+      markSeen(currentPlayer, currentCat, idx);
+    }
+    buildMixPool(currentPlayer);
+  }
+  setIdx(Math.min(idx + 1, pool.length));
+  renderCard();
+  updateProgress();
 }
 
 function nextCard() {
@@ -697,6 +714,7 @@ function nextCard() {
   setIdx(Math.min(idx + 1, pool.length));
   renderCard();
   updateProgress();
+  updateBtnScore();
 }
 
 function resetCat() {
