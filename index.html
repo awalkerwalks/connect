@@ -210,8 +210,8 @@ font-family: 'DM Sans', sans-serif; font-size: 0.88rem; cursor: pointer; transit
 </div>
 
 <div class="player-select">
-<button class="player-btn her active"><span class="cycle-arrow" onclick="cycleGender('her', -1)">&#8249;</span> <span class="player-label">Her questions</span> <span class="cycle-arrow" onclick="cycleGender('her', 1)">&#8250;</span></button>
-<button class="player-btn him"><span class="cycle-arrow" onclick="cycleGender('him', -1)">&#8249;</span> <span class="player-label">His questions</span> <span class="cycle-arrow" onclick="cycleGender('him', 1)">&#8250;</span></button>
+<button class="player-btn her active" onclick="setPlayer('her')"><span class="cycle-arrow" onclick="cycleGender('her', -1); event.stopPropagation();">&#8249;</span> <span class="player-label">Her questions</span> <span class="cycle-arrow" onclick="cycleGender('her', 1); event.stopPropagation();">&#8250;</span></button>
+<button class="player-btn him" onclick="setPlayer('him')"><span class="cycle-arrow" onclick="cycleGender('him', -1); event.stopPropagation();">&#8249;</span> <span class="player-label">His questions</span> <span class="cycle-arrow" onclick="cycleGender('him', 1); event.stopPropagation();">&#8250;</span></button>
 </div>
 
 <div class="cat-select">
